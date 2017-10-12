@@ -8,61 +8,55 @@
       - gcc
       - java-1.8.0-openjdk
 
+  - name: create the tuxedo users group
+    group:
+      name: "{{tuxedo_user_group}}"
 
   - name: add tuxedo user
     user:
-      name: tuxedo
+      name: "{{tuxedo_user}}"
+      createhome: yes
+      home: "{{tuxedo_user_home}}"
+      group: "{{tuxedo_user_group}}"
       append: yes
-
-#  - name: copy over the install media
-#    copy:
-#      src:  files/tuxedo122200_64_Linux_01_x86.zip
-#      dest: /home/tuxedo
-#      group: tuxedo
-#      owner: tuxedo
-#      mode: 0664
 
   - name: copy over the install media
     get_url:
       url: "{{tuxedo_url}}"
-      dest: /home/tuxedo/
-      group: tuxedo
-      owner: tuxedo
+      dest: "{{tuxedo_user_home}}"
+      group: "{{tuxedo_user_group}}"
+      owner: "{{tuxedo_user}}"
       mode: 0664
     register: tuxedo_zipfile
 
   - name: unzip
-    #command:  unzip /home/tuxedo/tuxedo122200_64_Linux_01_x86.zip
     command:  unzip {{ tuxedo_zipfile.dest }}
     args:
-      chdir: /home/tuxedo/
-      creates: /home/tuxedo/Disk1/install/runInstaller.sh
+      chdir: "{{tuxedo_user_home}}"
+      creates: "{{tuxedo_user_home}}/Disk1/install/runInstaller.sh"
     become: yes
-    become_user: tuxedo
-
-    #- name: ensure the installer permisions are set correctly
-    #command: chown -R tuxedo:tuxedo /home/tuxedo/Disk1
+    become_user: "{{tuxedo_user}}"
 
   - name: create the oracle inventory file
     template:
       src: templates/etc_oraInst.loc.j2
       dest: /etc/oraInst.loc
-      group: tuxedo
-      owner: tuxedo
+      group: "{{tuxedo_user_group}}"
+      owner: "{{tuxedo_user}}"
       mode: 0664
 
   - name: create the installer.properties file
     template:
       src: templates/installer.properties
-      dest: /home/tuxedo
-      group: tuxedo
-      owner: tuxedo
+      dest: "{{tuxedo_user_home}}"
+      group: "{{tuxedo_user_group}}"
+      owner: "{{tuxedo_user}}"
       mode: 0664
 
   - name: run the installer
-    shell: export JAVA_HOME=/usr/lib/jvm/jre && /home/tuxedo/Disk1/install/runInstaller.sh -responseFile ~/installer.properties -silent -waitforcompletion
+    shell: export JAVA_HOME=/usr/lib/jvm/jre && {{tuxedo_user_home}}/Disk1/install/runInstaller.sh -responseFile ~/installer.properties -silent -waitforcompletion
     args:
-      creates: /home/tuxedo/tux_1/
+      creates: "{{tuxedo_user_home}}/tux_1/"
     become: yes
-    become_user: tuxedo
+    become_user: "{{tuxedo_user}}"
 

@@ -10,7 +10,11 @@ You need the tuxedo software as a zip file either on a webserver accessable by t
 Role Variables
 --------------
 
-* tuxedo_url  - the URL (including filename) to find the tuxedo zip file
+* tuxedo_url: http://192.168.122.1:8080/tuxedo122200_64_Linux_01_x86.zip
+* tuxedo_user: tuxedo
+* tuxedo_user_home: /home/tuxedo
+* tuxedo_user_group: tuxedo
+
 
 Dependencies
 ------------
