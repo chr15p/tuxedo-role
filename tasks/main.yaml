@@ -1,6 +1,6 @@
 ---
   - name: install prereqs
-    yum:
+    package:
       name: "{{ item }}"
       state: latest
     with_items:
@@ -30,9 +30,10 @@
     register: tuxedo_zipfile
 
   - name: unzip
-    command:  unzip {{ tuxedo_zipfile.dest }}
-    args:
-      chdir: "{{tuxedo_user_home}}"
+    unarchive: 
+      src: "{{ tuxedo_zipfile.dest }}"
+      dest: "{{tuxedo_user_home}}"
+      remote_src: yes
       creates: "{{tuxedo_user_home}}/Disk1/install/runInstaller.sh"
     become: yes
     become_user: "{{tuxedo_user}}"
