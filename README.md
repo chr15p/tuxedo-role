@@ -20,11 +20,11 @@ No external dependancies
 Example Playbook
 ----------------
 
-- hosts: tuxedoservers
-  vars:   
-          tuxedo_url: http://192.168.122.1:8080/tuxedo122200_64_Linux_01_x86.zip
-  roles:
-    - tuxedo
+    - hosts: tuxedoservers
+      vars:   
+              tuxedo_url: http://192.168.122.1:8080/tuxedo122200_64_Linux_01_x86.zip
+      roles:
+        - tuxedo
 
 
 License
